@@ -1,0 +1,14 @@
+{
+  "name": "anniversary-backend",
+  "version": "1.0.0",
+  "description": "Secure backend for anniversary website",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "body-parser": "^1.20.2"
+  }
+}
