@@ -42,6 +42,7 @@ app.post('/login', (req, res) => {
     const { password } = req.body;
     if (password === PASSWORD) {
         req.session.authenticated = true;
+        req.session.canSeeHome = true; // One-time pass for index.html
         res.json({ success: true, message: 'Welcome Bibijaan 🤍' });
     } else {
         res.json({ success: false, message: 'You are either the wrong person or typing it wrong! ⚠️' });
@@ -55,7 +56,20 @@ app.get('/logout', (req, res) => {
 
 // SECURE FILE SERVER: Only serves Anniversary content AFTER login
 app.get('*', checkAuth, (req, res) => {
-    let requestedFile = req.path === '/' ? 'index.html' : req.path;
+    const isHome = (req.path === '/' || req.path === '/index.html');
+    
+    if (isHome) {
+        if (req.session.canSeeHome) {
+            req.session.canSeeHome = false; // "Consume" the pass so reload fails
+            return res.sendFile(path.join(__dirname, 'index.html'));
+        } else {
+            // Force re-login on reload
+            req.session.authenticated = false;
+            return res.redirect('/login');
+        }
+    }
+
+    let requestedFile = req.path;
     const fullPath = path.join(__dirname, requestedFile);
 
     // List of files that are NEVER allowed to be served publicly
