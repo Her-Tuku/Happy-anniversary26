@@ -84,7 +84,7 @@ Abdullah Sakin (Tuku) [Janeman]💝🌹💐
     </div>
 
     <!-- Audio element (no autoplay, triggered by button click) -->
-    <audio id="bgMusic" loop>
+    <audio id="bgMusic" loop preload="auto">
         <source src="love.mp3" type="audio/mpeg">
     </audio>
 
@@ -103,6 +103,7 @@ function openLetter(){
 function goLetter(){
     console.log("Starting celebration...");
     var music = document.getElementById("bgMusic");
+    music.volume = 1; // Ensure volume is up
     
     // Improved music play handling
     var playPromise = music.play();
