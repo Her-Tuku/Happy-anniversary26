@@ -5,6 +5,13 @@
 <title>Happy Anniversary</title>
 <link rel="stylesheet" href="style.css">
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins&display=swap" rel="stylesheet">
+<!-- Preload critical images -->
+<link rel="preload" as="image" href="1.jpg">
+<link rel="preload" as="image" href="2.png">
+<link rel="preload" as="image" href="2..jpg">
+<link rel="preload" as="image" href="8..jpg">
+<link rel="preload" as="image" href="9..jpg">
+<link rel="preload" as="image" href="couple.jpg">
 </head>
 
 <body class="page1">
@@ -77,9 +84,9 @@ Forever yours,
 Abdullah Sakin (Tuku) [Janeman]💝🌹💐
             </p>
         </div>
-        <div id="loveSection" style="display:none; position:absolute; top:40%; width:100%; text-align:center;">
-            <div id="loveText" style="position:static; display:block;">I Love You Bibijaan 🤍</div>
-            <button id="reopenBtn" style="display:none; margin-top:30px;" onclick="openLetter()">💌 Read Letter Again 💌</button>
+        <div id="loveSection" style="display:none; position:absolute; top:40%; width:100%; text-align:center; z-index: 100;">
+            <div id="loveText" style="position:static; display:block; opacity: 1;">I Love You Bibijaan 🤍</div>
+            <button id="reopenBtn" style="display:none; margin-top:30px; position: relative; z-index: 101;" onclick="openLetter()">💌 Read Letter Again 💌</button>
         </div>
     </div>
 
