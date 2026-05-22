@@ -42,10 +42,10 @@ app.post('/login', (req, res) => {
     const { password } = req.body;
     if (password === PASSWORD) {
         req.session.authenticated = true;
-        req.session.canSeeHome = true; // One-time pass for index.html
+        req.session.canSeeHome = true;
         res.json({ success: true, message: 'Welcome Bibijaan 🤍' });
     } else {
-        res.json({ success: false, message: 'You are either the wrong person or typing it wrong! ⚠️' });
+        res.json({ success: false, message: 'Wrong password! ⚠️' });
     }
 });
 
@@ -54,35 +54,35 @@ app.get('/logout', (req, res) => {
     res.redirect('/login');
 });
 
-// SECURE FILE SERVER: Only serves Anniversary content AFTER login
-app.get('*', checkAuth, (req, res) => {
-    const isHome = (req.path === '/' || req.path === '/index.html');
-    
-    if (isHome) {
-        if (req.session.canSeeHome) {
-            req.session.canSeeHome = false; // "Consume" the pass so reload fails
-            return res.sendFile(path.join(__dirname, 'index.html'));
-        } else {
-            // Force re-login on reload
-            req.session.authenticated = false;
-            return res.redirect('/login');
+// Protect index.html specifically
+app.get(['/', '/index.html'], (req, res, next) => {
+    if (req.session.authenticated && req.session.canSeeHome) {
+        req.session.canSeeHome = false; // Prevent logic reload loop
+        return res.sendFile(path.join(__dirname, 'index.html'));
+    } else if (req.session.authenticated) {
+        // If already authenticated but hitting / again, might need a refresh of session
+        // or just stay on index. For your specific "force login on reload" request:
+        req.session.authenticated = false;
+        return res.redirect('/login');
+    } else {
+        res.redirect('/login');
+    }
+});
+
+// Serve assets (images, mp3, css, js) with Auth check but more efficiently
+app.use(checkAuth, express.static(__dirname, {
+    index: false,
+    setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.mp3')) {
+            res.setHeader('Accept-Ranges', 'bytes');
+            res.setHeader('Content-Type', 'audio/mpeg');
         }
     }
+}));
 
-    let requestedFile = req.path;
-    const fullPath = path.join(__dirname, requestedFile);
-
-    // List of files that are NEVER allowed to be served publicly
-    const forbidden = ['server.js', 'package.json', 'node_modules', 'login.html'];
-    if (forbidden.some(f => requestedFile.includes(f))) {
-        return res.status(403).send('Forbidden');
-    }
-
-    if (fs.existsSync(fullPath) && fs.lstatSync(fullPath).isFile()) {
-        res.sendFile(fullPath);
-    } else {
-        res.status(404).send('Not Found');
-    }
+// Fallback for everything else
+app.get('*', checkAuth, (req, res) => {
+    res.status(404).send('Not Found');
 });
 
 app.listen(PORT, () => {
