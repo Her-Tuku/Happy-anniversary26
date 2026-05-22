@@ -101,7 +101,7 @@ button:hover {
 
   border-radius: 20px;
   box-shadow: 0 0 30px rgba(255, 0, 100, 0.6);
-  z-index: 10;
+  z-index: 150;
   border: 2px solid rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(5px);
 
@@ -173,6 +173,7 @@ button:hover {
   inset: 0;
   z-index: 1;
   overflow: hidden;
+  pointer-events: none; /* VERY IMPORTANT: ensure images don't block buttons */
 }
 
 .slide {
@@ -183,7 +184,7 @@ button:hover {
   background-position: center;
   opacity: 0;
   animation: slideKenBurns 65s infinite;
-  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 
 /* Ken Burns: fade in → slow zoom while visible → fade out */
@@ -200,11 +201,11 @@ button:hover {
   }
   7.5% {
     opacity: 0.9;
-    transform: scale(1.12);
+    transform: scale(1.08); /* Reduced scale from 1.12 to 1.08 for smoothness */
   }
   8% {
     opacity: 0;
-    transform: scale(1.12);
+    transform: scale(1.08);
   }
   100% {
     opacity: 0;
@@ -277,7 +278,7 @@ button:hover {
   font-family: "Great Vibes", cursive;
   color: #fefd96;
   opacity: 0;
-  display: none;
+  z-index: 100;
   animation: fadeIn 2s forwards;
 }
 
