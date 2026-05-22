@@ -34,7 +34,10 @@ const checkAuth = (req, res, next) => {
 
 // Route: Handle Login
 app.get('/login', (req, res) => {
-    if (req.session.authenticated) return res.redirect('/');
+    // Only redirect to / if they are authenticated AND haven't used up their home access yet
+    if (req.session.authenticated && req.session.canSeeHome) {
+        return res.redirect('/');
+    }
     res.sendFile(path.join(__dirname, 'login.html'));
 });
 
@@ -55,16 +58,17 @@ app.get('/logout', (req, res) => {
 });
 
 // Protect index.html specifically
-app.get(['/', '/index.html'], (req, res, next) => {
+app.get(['/', '/index.html'], (req, res) => {
     if (req.session.authenticated && req.session.canSeeHome) {
-        req.session.canSeeHome = false; // Prevent logic reload loop
+        // We set home access to false AFTER serving or just use a more stable way
+        // To satisfy "force login on reload", we set it to false so next HIT of / requires login
+        req.session.canSeeHome = false; 
         return res.sendFile(path.join(__dirname, 'index.html'));
-    } else if (req.session.authenticated) {
-        // If already authenticated but hitting / again, might need a refresh of session
-        // or just stay on index. For your specific "force login on reload" request:
-        req.session.authenticated = false;
-        return res.redirect('/login');
     } else {
+        // If they are authenticated but canSeeHome is false, it means they refreshed.
+        // We redirect them to login, but we DON'T set authenticated = false yet
+        // so that assets (images/css) already on the page can still finish loading
+        // until they actually navigate away to the login page.
         res.redirect('/login');
     }
 });
