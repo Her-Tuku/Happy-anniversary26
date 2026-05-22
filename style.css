@@ -20,7 +20,7 @@ body {
     url("couple.jpg") center/cover no-repeat;
   opacity: 0.65;
   filter: blur(2px);
-  z-index: -1;
+  z-index: 0;
 }
 
 /* PAGE 1 BACKGROUND */
@@ -35,7 +35,7 @@ body {
   background: url("couple.jpg") center/cover no-repeat;
   opacity: 0.25;
   filter: blur(2px);
-  z-index: -1;
+  z-index: 0;
 }
 
 /* PAGE 2 BACKGROUND */
@@ -101,6 +101,7 @@ button:hover {
 
   border-radius: 20px;
   box-shadow: 0 0 30px rgba(255, 0, 100, 0.6);
+  z-index: 10;
   border: 2px solid rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(5px);
 
@@ -170,7 +171,7 @@ button:hover {
 .slideshow {
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: 1;
   overflow: hidden;
 }
 
@@ -192,13 +193,13 @@ button:hover {
     transform: scale(1);
   }
   3% {
-    opacity: 0.55;
+    opacity: 0.9;
   }
   5% {
-    opacity: 0.55;
+    opacity: 0.9;
   }
   7.5% {
-    opacity: 0.55;
+    opacity: 0.9;
     transform: scale(1.12);
   }
   8% {
