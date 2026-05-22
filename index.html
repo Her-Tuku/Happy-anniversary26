@@ -101,19 +101,25 @@ function openLetter(){
 }
 
 function goLetter(){
-    // Start music (works because this is from a user click)
+    console.log("Starting celebration...");
     var music = document.getElementById("bgMusic");
-    music.play();
+    
+    // Improved music play handling
+    var playPromise = music.play();
+    if (playPromise !== undefined) {
+        playPromise.then(_ => {
+            console.log("Music started successfully!");
+        }).catch(error => {
+            console.error("Music play failed:", error);
+        });
+    }
 
-    // Hide welcome, show letter page
+    // UI Transitions
     document.getElementById("welcomeSection").style.display = "none";
     document.getElementById("letterPage").style.display = "block";
-
-    // Switch background style
     document.body.classList.remove("page1");
     document.body.classList.add("page2");
 
-    // Hide page1-only overlays
     var photoOverlay = document.querySelector(".photo-overlay");
     var bgOverlay = document.querySelector(".bg-overlay");
     if(photoOverlay) photoOverlay.style.display = "none";
